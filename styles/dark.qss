@@ -6,7 +6,8 @@
     outline: none;
 }}
 
-QMainWindow, QWidget#rootWidget, QWidget#page, QWidget#pageContent, QScrollArea#pageScroll {{
+QMainWindow, QWidget#rootWidget, QWidget#page, QWidget#pageContent, QScrollArea#pageScroll,
+QWidget#authRoot {{
     background: {background};
 }}
 
@@ -146,3 +147,91 @@ QPushButton#dangerButton {{ background: rgba(255, 92, 92, 0.08); border: 1px sol
 
 QStatusBar {{ background: {sidebar}; color: {text_secondary}; border-top: 1px solid {border}; font-size: 11px; }}
 QToolTip {{ background: {card_hover}; color: {text}; border: 1px solid {border}; padding: 6px; }}
+
+/* Phase 2 authentication screens extend the existing design system. */
+QFrame#authCard {{
+    background: {card};
+    border: 1px solid {border};
+    border-radius: 16px;
+}}
+QLabel#authBrandMark {{
+    background: {primary};
+    border-radius: 14px;
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+}}
+QLabel#authBrandName {{ font-size: 18px; font-weight: 700; }}
+QLabel#authTitle {{ font-size: 24px; font-weight: 700; }}
+QLabel#authSubtitle {{ color: {text_secondary}; font-size: 12px; }}
+QLabel#authFieldLabel {{ color: #C8CDD6; font-size: 12px; font-weight: 600; }}
+QLabel#authHint {{ color: {text_secondary}; font-size: 11px; line-height: 1.4; }}
+
+QFrame#passwordInput {{
+    background: #101216;
+    border: 1px solid {border};
+    border-radius: 9px;
+    min-height: 46px;
+}}
+QFrame#passwordInput[focused="true"] {{ border-color: {primary}; }}
+QFrame#passwordInput[error="true"] {{ border-color: {danger}; }}
+QLineEdit#passwordLineEdit {{
+    background: transparent;
+    border: none;
+    color: {text};
+    font-size: 13px;
+    min-height: 44px;
+    padding: 0;
+    selection-background-color: {primary};
+}}
+QLineEdit#passwordLineEdit::placeholder {{ color: #646D7A; }}
+QToolButton#visibilityButton {{
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    min-width: 32px;
+    min-height: 32px;
+}}
+QToolButton#visibilityButton:hover {{ background: {card_hover}; }}
+
+QPushButton#authPrimaryButton {{
+    background: {primary};
+    border: 1px solid {primary};
+    border-radius: 9px;
+    color: white;
+    font-size: 13px;
+    font-weight: 650;
+    min-height: 44px;
+}}
+QPushButton#authPrimaryButton:hover {{ background: {primary_hover}; border-color: {primary_hover}; }}
+QPushButton#authPrimaryButton:pressed {{ background: #5D4ED3; }}
+QPushButton#authPrimaryButton:disabled {{ background: #38324F; border-color: #38324F; color: #898394; }}
+
+QLabel#authError {{
+    background: rgba(255, 92, 92, 0.07);
+    border: 1px solid rgba(255, 92, 92, 0.24);
+    border-radius: 8px;
+    color: #FF8B8B;
+    font-size: 11px;
+    padding: 10px 12px;
+}}
+
+QProgressBar#strengthBar {{
+    background: {border};
+    border: none;
+    border-radius: 3px;
+    min-height: 6px;
+    max-height: 6px;
+}}
+QProgressBar#strengthBar::chunk {{ background: #4B5360; border-radius: 3px; }}
+QProgressBar#strengthBar[strength="0"]::chunk {{ background: {danger}; }}
+QProgressBar#strengthBar[strength="1"]::chunk {{ background: #FF7A59; }}
+QProgressBar#strengthBar[strength="2"]::chunk {{ background: {warning}; }}
+QProgressBar#strengthBar[strength="3"]::chunk {{ background: #65D6A2; }}
+QProgressBar#strengthBar[strength="4"]::chunk {{ background: {success}; }}
+QLabel#strengthLabel {{ font-size: 11px; font-weight: 650; }}
+QLabel#strengthLabel[strength="0"] {{ color: {danger}; }}
+QLabel#strengthLabel[strength="1"] {{ color: #FF7A59; }}
+QLabel#strengthLabel[strength="2"] {{ color: {warning}; }}
+QLabel#strengthLabel[strength="3"] {{ color: #65D6A2; }}
+QLabel#strengthLabel[strength="4"] {{ color: {success}; }}
