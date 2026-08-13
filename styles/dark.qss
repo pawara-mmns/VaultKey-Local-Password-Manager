@@ -1,0 +1,148 @@
+/* VaultKey dark theme. Color placeholders are populated from app/config.py. */
+
+* {{
+    font-family: "Segoe UI", "Inter", sans-serif;
+    color: {text};
+    outline: none;
+}}
+
+QMainWindow, QWidget#rootWidget, QWidget#page, QWidget#pageContent, QScrollArea#pageScroll {{
+    background: {background};
+}}
+
+QScrollArea#pageScroll > QWidget > QWidget {{
+    background: {background};
+}}
+
+QFrame#sidebar {{
+    background: {sidebar};
+    border-right: 1px solid {border};
+}}
+
+QLabel#brandMark {{
+    background: {primary};
+    border-radius: 12px;
+    color: white;
+    font-size: 20px;
+    font-weight: 700;
+}}
+
+QLabel#brandName {{ font-size: 19px; font-weight: 700; }}
+QLabel#brandTagline {{ color: {text_secondary}; font-size: 9px; font-weight: 600; letter-spacing: 1px; }}
+QLabel#navSectionLabel {{ color: #69717E; font-size: 10px; font-weight: 700; padding-left: 10px; }}
+
+QPushButton#sidebarButton, QPushButton#sidebarUtilityButton {{
+    background: transparent;
+    border: none;
+    border-radius: 9px;
+    color: {text_secondary};
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 44px;
+    padding: 0 13px;
+    text-align: left;
+}}
+
+QPushButton#sidebarButton:hover, QPushButton#sidebarUtilityButton:hover {{
+    background: {card_hover};
+    color: {text};
+}}
+
+QPushButton#sidebarButton:checked {{
+    background: rgba(108, 92, 231, 0.18);
+    border-left: 3px solid {primary};
+    color: #C9C2FF;
+    font-weight: 600;
+    padding-left: 10px;
+}}
+
+QFrame#securityCard {{
+    background: rgba(46, 204, 113, 0.06);
+    border: 1px solid rgba(46, 204, 113, 0.18);
+    border-radius: 10px;
+}}
+QLabel#securityTitle {{ color: {success}; font-size: 12px; font-weight: 600; }}
+QLabel#securityText {{ color: {text_secondary}; font-size: 11px; }}
+
+QLabel#pageTitle {{ font-size: 29px; font-weight: 700; }}
+QLabel#pageSubtitle {{ color: {text_secondary}; font-size: 13px; }}
+QLabel#sectionTitle {{ font-size: 17px; font-weight: 650; }}
+
+QPushButton#primaryButton, QPushButton#secondaryButton, QPushButton#compactButton {{
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 40px;
+    padding: 0 18px;
+}}
+QPushButton#primaryButton {{ background: {primary}; border: 1px solid {primary}; color: white; }}
+QPushButton#primaryButton:hover {{ background: {primary_hover}; border-color: {primary_hover}; }}
+QPushButton#secondaryButton {{ background: {card}; border: 1px solid {border}; }}
+QPushButton#secondaryButton:hover {{ background: {card_hover}; border-color: #343B48; }}
+QPushButton#compactButton {{ background: {card_hover}; border: 1px solid {border}; min-height: 34px; padding: 0 14px; }}
+QPushButton:disabled {{ color: #626A78; background: #15181E; border-color: #222730; }}
+QPushButton#linkButton {{ background: transparent; border: none; color: #A99EFF; font-weight: 600; padding: 6px; }}
+QPushButton#linkButton:hover {{ color: #C9C2FF; }}
+
+QFrame#statCard, QFrame#contentCard, QFrame#emptyState, QFrame#generatorCard,
+QFrame#categoryCard, QFrame#settingsCard {{
+    background: {card};
+    border: 1px solid {border};
+    border-radius: 13px;
+}}
+QFrame#statCard:hover, QFrame#categoryCard:hover {{ background: {card_hover}; border-color: #343B48; }}
+QLabel#statTitle {{ color: {text_secondary}; font-size: 12px; font-weight: 600; }}
+QLabel#statValue {{ font-size: 28px; font-weight: 700; }}
+QLabel#statHint {{ color: #717986; font-size: 11px; }}
+QLabel#statDot {{ font-size: 10px; }}
+QLabel#statDot[accent="primary"] {{ color: {primary}; }}
+QLabel#statDot[accent="warning"] {{ color: {warning}; }}
+QLabel#statDot[accent="danger"] {{ color: {danger}; }}
+QLabel#statDot[accent="success"] {{ color: {success}; }}
+
+QLabel#emptyIcon {{ color: {primary}; font-size: 42px; }}
+QLabel#emptyIconSmall {{ color: {primary}; font-size: 27px; }}
+QLabel#emptyTitle {{ font-size: 16px; font-weight: 650; }}
+QLabel#emptyDescription {{ color: {text_secondary}; font-size: 12px; }}
+
+QLineEdit#searchInput, QComboBox#filterCombo {{
+    background: {card};
+    border: 1px solid {border};
+    border-radius: 9px;
+    color: {text};
+    min-height: 42px;
+    padding: 0 14px;
+    selection-background-color: {primary};
+}}
+QLineEdit#searchInput {{ font-size: 13px; }}
+QLineEdit#searchInput:focus, QComboBox#filterCombo:focus {{ border-color: {primary}; }}
+QComboBox#filterCombo {{ min-width: 145px; padding-right: 28px; }}
+QComboBox#filterCombo::drop-down {{ border: none; width: 28px; }}
+QComboBox#filterCombo QAbstractItemView {{ background: {card}; border: 1px solid {border}; selection-background-color: {primary}; padding: 5px; }}
+
+QLabel#fieldLabel {{ color: {text_secondary}; font-size: 12px; font-weight: 600; }}
+QFrame#passwordPreview {{ background: #101216; border: 1px solid {border}; border-radius: 10px; }}
+QLabel#passwordText {{ font-family: "Cascadia Mono", "Consolas", monospace; font-size: 17px; letter-spacing: 2px; }}
+QLabel#lengthBadge, QLabel#phaseBadge {{ background: rgba(108, 92, 231, 0.15); color: #BEB6FF; border-radius: 7px; padding: 5px 9px; font-size: 11px; font-weight: 600; }}
+QSlider#lengthSlider::groove:horizontal {{ background: {border}; height: 5px; border-radius: 2px; }}
+QSlider#lengthSlider::sub-page:horizontal {{ background: {primary}; border-radius: 2px; }}
+QSlider#lengthSlider::handle:horizontal {{ background: {text}; border: 3px solid {primary}; width: 14px; height: 14px; margin: -7px 0; border-radius: 10px; }}
+QCheckBox {{ color: {text_secondary}; font-size: 12px; spacing: 9px; }}
+QCheckBox::indicator {{ width: 17px; height: 17px; border: 1px solid #3B4350; border-radius: 5px; background: #111318; }}
+QCheckBox::indicator:checked {{ background: {primary}; border-color: {primary}; }}
+
+QLabel#categoryMark {{ background: rgba(108, 92, 231, 0.15); color: #BEB6FF; border-radius: 11px; font-size: 15px; font-weight: 700; }}
+QLabel#categoryTitle {{ font-size: 15px; font-weight: 650; }}
+QLabel#categoryCount {{ color: {text_secondary}; font-size: 11px; }}
+
+QWidget#settingsRow {{ background: transparent; }}
+QLabel#settingsTitle {{ font-size: 13px; font-weight: 600; }}
+QLabel#settingsDescription {{ color: {text_secondary}; font-size: 11px; }}
+QPushButton#settingsAction {{ background: transparent; border: none; color: #A99EFF; font-size: 12px; font-weight: 600; padding: 8px; }}
+QFrame#divider {{ background: {border}; border: none; margin: 0 18px; }}
+QFrame#dangerCard {{ background: rgba(255, 92, 92, 0.04); border: 1px solid rgba(255, 92, 92, 0.22); border-radius: 13px; }}
+QLabel#dangerTitle {{ color: {danger}; font-size: 13px; font-weight: 650; }}
+QPushButton#dangerButton {{ background: rgba(255, 92, 92, 0.08); border: 1px solid rgba(255, 92, 92, 0.3); color: {danger}; border-radius: 8px; min-height: 36px; padding: 0 14px; font-weight: 600; }}
+
+QStatusBar {{ background: {sidebar}; color: {text_secondary}; border-top: 1px solid {border}; font-size: 11px; }}
+QToolTip {{ background: {card_hover}; color: {text}; border: 1px solid {border}; padding: 6px; }}

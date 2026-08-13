@@ -1,0 +1,16 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+data/*.db
+data/*.db-*
+dist/
+build/
+*.spec
+.env
+.idea/
+.vscode/
+.pytest_cache/
+.mypy_cache/
+*.log
