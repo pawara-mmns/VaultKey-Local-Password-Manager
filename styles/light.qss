@@ -1,0 +1,20 @@
+/* Phase 5 light-theme refinements layered over the shared component theme. */
+QToolTip {{
+    background: {card};
+    border: 1px solid {border};
+    color: {text};
+}}
+QMenu {{
+    background: {card};
+    border: 1px solid {border};
+    color: {text};
+}}
+QMenu::item:selected {{ background: {card_hover}; color: {primary}; }}
+QComboBox QAbstractItemView {{
+    background: {card};
+    border: 1px solid {border};
+    color: {text};
+    selection-background-color: {card_hover};
+    selection-color: {primary};
+}}
+QStatusBar {{ background: {card}; color: {text_secondary}; }}
