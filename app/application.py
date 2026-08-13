@@ -8,7 +8,7 @@ from PySide6.QtCore import QCoreApplication, Qt
 from PySide6.QtWidgets import QApplication
 
 from app.config import APP_NAME, ORGANIZATION_NAME, WINDOW_ICON_PATH, load_stylesheet
-from app.ui.main_window import MainWindow
+from app.controller import VaultApplicationController
 
 
 def create_application(argv: list[str] | None = None) -> QApplication:
@@ -35,6 +35,6 @@ def create_application(argv: list[str] | None = None) -> QApplication:
 def run() -> int:
     """Start the VaultKey event loop."""
     application = create_application()
-    window = MainWindow()
-    window.show()
+    controller = VaultApplicationController(application)
+    controller.start()
     return application.exec()
