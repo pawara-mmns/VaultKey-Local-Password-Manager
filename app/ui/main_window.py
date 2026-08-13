@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-from PySide6.QtCore import QEasingCurve, QPropertyAnimation
+from PySide6.QtCore import QEasingCurve, QPropertyAnimation, Signal
 from PySide6.QtWidgets import QHBoxLayout, QMainWindow, QStackedWidget, QWidget
 
 from app.config import (
@@ -25,6 +25,9 @@ from app.components.sidebar import Sidebar
 
 class MainWindow(QMainWindow):
     """Hosts sidebar navigation and the page stack."""
+
+    lock_requested = Signal()
+    exit_requested = Signal()
 
     def __init__(self) -> None:
         super().__init__()
@@ -50,8 +53,8 @@ class MainWindow(QMainWindow):
 
         self._register_pages()
         self.sidebar.page_requested.connect(self.show_page)
-        self.sidebar.lock_requested.connect(self._show_phase_message)
-        self.sidebar.exit_requested.connect(self.close)
+        self.sidebar.lock_requested.connect(self.lock_requested.emit)
+        self.sidebar.exit_requested.connect(self.exit_requested.emit)
         self.show_page("dashboard", animate=False)
 
     def _register_pages(self) -> None:
@@ -97,8 +100,3 @@ class MainWindow(QMainWindow):
             animation.setEasingCurve(QEasingCurve.Type.OutCubic)
             self._fade_animation = animation
             animation.start()
-
-    def _show_phase_message(self) -> None:
-        self.statusBar().showMessage(
-            "Vault locking will be available after security setup is implemented.", 4500
-        )
