@@ -64,12 +64,17 @@ class StatCard(QFrame):
         top.addStretch(1)
         top.addWidget(dot)
 
-        value_label = QLabel(value, objectName="statValue")
-        hint_label = QLabel(hint, objectName="statHint")
+        self.value_label = QLabel(value, objectName="statValue")
+        self.hint_label = QLabel(hint, objectName="statHint")
 
         layout.addLayout(top)
-        layout.addWidget(value_label)
-        layout.addWidget(hint_label)
+        layout.addWidget(self.value_label)
+        layout.addWidget(self.hint_label)
+
+    def set_value(self, value: int | str, hint: str | None = None) -> None:
+        self.value_label.setText(str(value))
+        if hint is not None:
+            self.hint_label.setText(hint)
 
 
 class EmptyState(QFrame):
