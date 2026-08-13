@@ -56,6 +56,16 @@ class DatabaseManager:
             FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
         );
 
+        CREATE TABLE IF NOT EXISTS app_settings (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS schema_metadata (
+            key TEXT PRIMARY KEY,
+            value TEXT NOT NULL
+        );
+
         CREATE INDEX IF NOT EXISTS idx_credentials_service
             ON credentials(service_name COLLATE NOCASE);
         CREATE INDEX IF NOT EXISTS idx_credentials_website
@@ -94,6 +104,12 @@ class DatabaseManager:
                     VALUES (?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
                     """,
                     ((name,) for name in self._DEFAULT_CATEGORIES),
+                )
+                connection.execute(
+                    """
+                    INSERT INTO schema_metadata (key, value) VALUES ('schema_version', '5')
+                    ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                    """
                 )
         except (OSError, sqlite3.Error) as error:
             raise DatabaseError("Unable to initialize the local vault database.") from error
@@ -163,6 +179,19 @@ class DatabaseManager:
             raise
         except sqlite3.Error as error:
             raise DatabaseError("Unable to save the local vault configuration.") from error
+
+    def reset(self) -> None:
+        """Remove only VaultKey's live database and its SQLite sidecar files."""
+        try:
+            for path in (
+                self.path,
+                self.path.with_name(self.path.name + "-wal"),
+                self.path.with_name(self.path.name + "-shm"),
+            ):
+                path.unlink(missing_ok=True)
+            self.initialize()
+        except (OSError, sqlite3.Error) as error:
+            raise DatabaseError("Unable to reset the local vault.") from error
 
     @contextmanager
     def connection(self) -> Iterator[sqlite3.Connection]:
