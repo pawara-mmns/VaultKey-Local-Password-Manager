@@ -1,0 +1,1 @@
+"""VaultKey automated tests."""
