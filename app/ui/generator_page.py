@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from PySide6.QtCore import QTimer, Qt
+from PySide6.QtCore import QTimer, Qt, Signal
 from PySide6.QtGui import QGuiApplication, QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QCheckBox,
@@ -47,6 +47,8 @@ class PasswordOptionCard(QFrame):
 
 class GeneratorPage(QWidget):
     """Generate, assess, and copy passwords without persisting them."""
+
+    save_requested = Signal(str)
 
     def __init__(self) -> None:
         super().__init__()
@@ -192,10 +194,12 @@ class GeneratorPage(QWidget):
         self.generate_button = QPushButton(
             "↻  Generate New Password", objectName="primaryButton"
         )
+        self.save_button = QPushButton("Save to Vault", objectName="secondaryButton")
         self.generate_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.generate_button.setAccessibleName("Generate new password")
         action_row.addWidget(shortcut_hint)
         action_row.addStretch(1)
+        action_row.addWidget(self.save_button)
         action_row.addWidget(self.generate_button)
 
         layout.addWidget(self.feedback_label)
@@ -224,6 +228,9 @@ class GeneratorPage(QWidget):
             lambda checked=False: self.generate_password()
         )
         self.copy_button.clicked.connect(lambda checked=False: self.copy_password())
+        self.save_button.clicked.connect(
+            lambda checked=False: self.save_requested.emit(self.password_output.text())
+        )
         self.generate_shortcut = QShortcut(QKeySequence("Ctrl+G"), self)
         self.generate_shortcut.activated.connect(self.generate_password)
 
