@@ -28,6 +28,7 @@ from app.security.password_generator import (
     PasswordGenerator,
 )
 from app.security.password_strength import StrengthResult, assess_generated_password
+from app.services.clipboard_service import ClipboardService
 
 
 class PasswordOptionCard(QFrame):
@@ -50,8 +51,9 @@ class GeneratorPage(QWidget):
 
     save_requested = Signal(str)
 
-    def __init__(self) -> None:
+    def __init__(self, clipboard_service: ClipboardService | None = None) -> None:
         super().__init__()
+        self.clipboard_service = clipboard_service
         self.setObjectName("page")
         self._generator = PasswordGenerator()
 
@@ -305,7 +307,10 @@ class GeneratorPage(QWidget):
             self._show_feedback("Generate a password before copying.", error=True)
             return
         try:
-            QGuiApplication.clipboard().setText(password)
+            if self.clipboard_service is not None:
+                self.clipboard_service.copy_sensitive(password)
+            else:
+                QGuiApplication.clipboard().setText(password)
         except Exception:
             self._show_feedback("VaultKey could not access the clipboard.", error=True)
             return
@@ -345,3 +350,9 @@ class GeneratorPage(QWidget):
         self.copy_button.style().polish(self.copy_button)
         if self.feedback_label.property("state") == "success":
             self._clear_feedback()
+
+    def clear_sensitive_state(self) -> None:
+        self._copy_feedback_timer.stop()
+        self._length_debounce_timer.stop()
+        self.password_output.clear()
+        self._reset_copy_feedback()

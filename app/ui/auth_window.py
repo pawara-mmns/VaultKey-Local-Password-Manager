@@ -71,6 +71,16 @@ class AuthWindow(QMainWindow):
         self.setCentralWidget(root)
 
     def show_error(self, message: str) -> None:
+        self.error_label.setProperty("state", "error")
+        self.error_label.style().unpolish(self.error_label)
+        self.error_label.style().polish(self.error_label)
+        self.error_label.setText(message)
+        self.error_label.show()
+
+    def show_notice(self, message: str) -> None:
+        self.error_label.setProperty("state", "notice")
+        self.error_label.style().unpolish(self.error_label)
+        self.error_label.style().polish(self.error_label)
         self.error_label.setText(message)
         self.error_label.show()
 

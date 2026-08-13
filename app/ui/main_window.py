@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import QEasingCurve, QPropertyAnimation, Signal
-from PySide6.QtWidgets import QDialog, QHBoxLayout, QMainWindow, QStackedWidget, QWidget
+from PySide6.QtWidgets import QApplication, QDialog, QHBoxLayout, QMainWindow, QStackedWidget, QWidget
 
 from app.config import (
     APP_NAME,
@@ -22,6 +22,8 @@ from app.components.sidebar import Sidebar
 from app.database.category_repository import DuplicateCategoryError
 from app.database.database import DatabaseError
 from app.services.vault_service import VaultService, VaultServiceError
+from app.services.clipboard_service import ClipboardService
+from app.services.settings_service import SettingsService
 from app.security.encryption import DecryptionError, EncryptionError
 from app.ui.dialogs import (
     CategoryDialog,
@@ -36,8 +38,20 @@ class MainWindow(QMainWindow):
 
     lock_requested = Signal()
     exit_requested = Signal()
+    auto_lock_changed = Signal(int)
+    clipboard_clear_changed = Signal(int)
+    appearance_changed = Signal(str)
+    change_master_requested = Signal()
+    backup_requested = Signal()
+    restore_requested = Signal()
+    reset_requested = Signal()
 
-    def __init__(self, vault_service: VaultService | None = None) -> None:
+    def __init__(
+        self,
+        vault_service: VaultService | None = None,
+        settings_service: SettingsService | None = None,
+        clipboard_service: ClipboardService | None = None,
+    ) -> None:
         super().__init__()
         self.setObjectName("mainWindow")
         self.setWindowTitle(f"{APP_NAME} — Local password manager")
@@ -47,6 +61,8 @@ class MainWindow(QMainWindow):
         self._pages: dict[str, QWidget] = {}
         self._fade_animation: QPropertyAnimation | None = None
         self.vault_service = vault_service
+        self.settings_service = settings_service
+        self.clipboard_service = clipboard_service
 
         root = QWidget(objectName="rootWidget")
         layout = QHBoxLayout(root)
@@ -71,9 +87,9 @@ class MainWindow(QMainWindow):
             "dashboard": DashboardPage(self.vault_service),
             "vault": VaultPage(self.vault_service),
             "favorites": FavoritesPage(self.vault_service),
-            "generator": GeneratorPage(),
+            "generator": GeneratorPage(self.clipboard_service),
             "categories": CategoriesPage(self.vault_service),
-            "settings": SettingsPage(),
+            "settings": SettingsPage(self.settings_service),
         }
         for page_id, page in pages.items():
             self._pages[page_id] = page
@@ -106,6 +122,16 @@ class MainWindow(QMainWindow):
         generator = self._pages["generator"]
         if isinstance(generator, GeneratorPage):
             generator.save_requested.connect(self.open_add_credential)
+
+        settings = self._pages["settings"]
+        if isinstance(settings, SettingsPage):
+            settings.auto_lock_changed.connect(self.auto_lock_changed.emit)
+            settings.clipboard_clear_changed.connect(self.clipboard_clear_changed.emit)
+            settings.appearance_changed.connect(self.appearance_changed.emit)
+            settings.change_master_requested.connect(self.change_master_requested.emit)
+            settings.backup_requested.connect(self.backup_requested.emit)
+            settings.restore_requested.connect(self.restore_requested.emit)
+            settings.reset_requested.connect(self.reset_requested.emit)
 
     def show_page(self, page_id: str, animate: bool = True) -> None:
         page = self._pages.get(page_id)
@@ -170,6 +196,7 @@ class MainWindow(QMainWindow):
                 credential,
                 lambda: self.vault_service.get_password(credential_id),
                 self,
+                self.clipboard_service,
             )
             dialog.edit_requested.connect(
                 lambda current_id: self._edit_from_detail(dialog, current_id)
@@ -281,3 +308,16 @@ class MainWindow(QMainWindow):
     ) -> None:
         dialog.accept()
         self.set_favorite(credential_id, favorite)
+
+    def prepare_for_lock(self) -> None:
+        """Close modals and clear transient secrets before the session key is dropped."""
+        for widget in QApplication.topLevelWidgets():
+            if isinstance(widget, QDialog):
+                wipe = getattr(widget, "wipe_sensitive", None)
+                if callable(wipe):
+                    wipe()
+                widget.reject()
+        generator = self._pages.get("generator")
+        clear = getattr(generator, "clear_sensitive_state", None)
+        if callable(clear):
+            clear()
