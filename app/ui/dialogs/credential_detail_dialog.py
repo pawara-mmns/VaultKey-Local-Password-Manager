@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
 )
 
 from app.database.models import CredentialDetail
+from app.services.clipboard_service import ClipboardService
 
 
 class CredentialDetailDialog(QDialog):
@@ -30,6 +31,7 @@ class CredentialDetailDialog(QDialog):
         credential: CredentialDetail,
         password_loader: Callable[[], str],
         parent=None,
+        clipboard_service: ClipboardService | None = None,
     ) -> None:
         super().__init__(parent)
         self.setObjectName("credentialDetailDialog")
@@ -38,6 +40,7 @@ class CredentialDetailDialog(QDialog):
         self.setMinimumWidth(590)
         self.credential = credential
         self._password_loader = password_loader
+        self._clipboard_service = clipboard_service
         self._password_visible = False
         self._feedback_timer = QTimer(self)
         self._feedback_timer.setSingleShot(True)
@@ -162,7 +165,10 @@ class CredentialDetailDialog(QDialog):
     def _copy_password(self) -> None:
         try:
             password = self._password_loader()
-            QGuiApplication.clipboard().setText(password)
+            if self._clipboard_service is not None:
+                self._clipboard_service.copy_sensitive(password)
+            else:
+                QGuiApplication.clipboard().setText(password)
             del password
             self._show_feedback("Password copied.")
         except Exception:
@@ -170,7 +176,10 @@ class CredentialDetailDialog(QDialog):
 
     def _copy_text(self, value: str, message: str) -> None:
         try:
-            QGuiApplication.clipboard().setText(value)
+            if self._clipboard_service is not None:
+                self._clipboard_service.copy_text(value)
+            else:
+                QGuiApplication.clipboard().setText(value)
             self._show_feedback(message)
         except Exception:
             self._show_feedback("Unable to access the clipboard.", error=True)
@@ -191,3 +200,7 @@ class CredentialDetailDialog(QDialog):
         self.password_display.clear()
         self._password_loader = lambda: ""
         super().done(result)
+
+    def wipe_sensitive(self) -> None:
+        self.password_display.clear()
+        self._password_loader = lambda: ""
