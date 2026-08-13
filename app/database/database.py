@@ -26,14 +26,58 @@ class DatabaseManager:
     """Owns schema initialization and the one-row vault settings record."""
 
     _SCHEMA = """
+        BEGIN IMMEDIATE;
+
         CREATE TABLE IF NOT EXISTS vault_settings (
             id INTEGER PRIMARY KEY CHECK (id = 1),
             password_verifier BLOB NOT NULL,
             salt BLOB NOT NULL,
             kdf_parameters TEXT NOT NULL,
             created_at TEXT NOT NULL
-        )
+        );
+
+        CREATE TABLE IF NOT EXISTS categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL COLLATE NOCASE UNIQUE,
+            created_at TEXT NOT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS credentials (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            service_name TEXT NOT NULL,
+            username_encrypted BLOB NOT NULL,
+            password_encrypted BLOB NOT NULL,
+            website TEXT NOT NULL DEFAULT '',
+            category_id INTEGER,
+            notes_encrypted BLOB NOT NULL,
+            favorite INTEGER NOT NULL DEFAULT 0 CHECK (favorite IN (0, 1)),
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL,
+            FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_credentials_service
+            ON credentials(service_name COLLATE NOCASE);
+        CREATE INDEX IF NOT EXISTS idx_credentials_website
+            ON credentials(website COLLATE NOCASE);
+        CREATE INDEX IF NOT EXISTS idx_credentials_category
+            ON credentials(category_id);
+        CREATE INDEX IF NOT EXISTS idx_credentials_favorite
+            ON credentials(favorite);
+        CREATE INDEX IF NOT EXISTS idx_credentials_updated
+            ON credentials(updated_at DESC);
+
+        COMMIT;
     """
+
+    _DEFAULT_CATEGORIES = (
+        "Social",
+        "Development",
+        "Work",
+        "Education",
+        "Finance",
+        "Other",
+    )
 
     def __init__(self, path: Path) -> None:
         self.path = Path(path)
@@ -43,7 +87,14 @@ class DatabaseManager:
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             with self._connect() as connection:
-                connection.execute(self._SCHEMA)
+                connection.executescript(self._SCHEMA)
+                connection.executemany(
+                    """
+                    INSERT OR IGNORE INTO categories (name, created_at)
+                    VALUES (?, strftime('%Y-%m-%dT%H:%M:%SZ', 'now'))
+                    """,
+                    ((name,) for name in self._DEFAULT_CATEGORIES),
+                )
         except (OSError, sqlite3.Error) as error:
             raise DatabaseError("Unable to initialize the local vault database.") from error
 
@@ -114,12 +165,17 @@ class DatabaseManager:
             raise DatabaseError("Unable to save the local vault configuration.") from error
 
     @contextmanager
-    def _connect(self) -> Iterator[sqlite3.Connection]:
+    def connection(self) -> Iterator[sqlite3.Connection]:
         connection = sqlite3.connect(self.path, timeout=10.0)
         try:
+            connection.row_factory = sqlite3.Row
             connection.execute("PRAGMA foreign_keys = ON")
             connection.execute("PRAGMA busy_timeout = 10000")
             with connection:
                 yield connection
         finally:
             connection.close()
+
+    def _connect(self):
+        """Compatibility wrapper retained for the Phase 2 repository methods."""
+        return self.connection()
