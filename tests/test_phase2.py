@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hmac
 import os
 import secrets
 import sqlite3
@@ -68,8 +69,11 @@ class SecurityAndDatabaseTests(unittest.TestCase):
             self.assertIsNotNone(settings)
             assert settings is not None
             self.assertIsNone(verify_master_password("definitely-incorrect", settings))
-            self.assertEqual(verify_master_password(password, settings), bundle.derived_key)
-            self.assertNotIn(password.encode("utf-8"), path.read_bytes())
+            verified_key = verify_master_password(password, settings)
+            self.assertIsNotNone(verified_key)
+            assert verified_key is not None
+            self.assertTrue(hmac.compare_digest(verified_key, bundle.derived_key))
+            self.assertFalse(password.encode("utf-8") in path.read_bytes())
 
             with closing(sqlite3.connect(path)) as connection:
                 columns = {
