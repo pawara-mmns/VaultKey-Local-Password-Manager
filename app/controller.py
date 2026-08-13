@@ -22,6 +22,7 @@ from app.security.key_manager import (
     verify_master_password,
 )
 from app.security.session import VaultSession
+from app.services.vault_service import VaultService
 from app.ui.main_window import MainWindow
 from app.ui.setup_window import SetupWindow
 from app.ui.unlock_window import UnlockWindow
@@ -70,7 +71,7 @@ class VaultApplicationController(QObject):
         self._replace_window(window)
 
     def show_main_window(self) -> None:
-        window = MainWindow()
+        window = MainWindow(VaultService(self.database, self.session))
         window.lock_requested.connect(self.lock_vault)
         window.exit_requested.connect(self.exit_application)
         self._replace_window(window)
