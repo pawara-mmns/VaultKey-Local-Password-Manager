@@ -332,3 +332,117 @@ QLabel#generatorFeedback[state="error"] {{
     border: 1px solid rgba(255, 92, 92, 0.22);
     color: #FF8B8B;
 }}
+
+/* Phase 4 encrypted vault */
+QDialog#credentialDialog, QDialog#credentialDetailDialog, QDialog#categoryDialog,
+QDialog#deleteDialog {{ background: {card}; }}
+QLabel#dialogTitle {{ font-size: 21px; font-weight: 700; }}
+QLabel#dialogSubtitle {{ color: {text_secondary}; font-size: 12px; }}
+QLabel#dialogFieldLabel, QLabel#detailFieldLabel {{
+    color: {text_secondary};
+    font-size: 11px;
+    font-weight: 650;
+}}
+QLineEdit#dialogInput, QComboBox#dialogCombo, QTextEdit#dialogNotes {{
+    background: #101216;
+    border: 1px solid {border};
+    border-radius: 8px;
+    color: {text};
+    font-size: 12px;
+    min-height: 40px;
+    padding: 0 12px;
+    selection-background-color: {primary};
+}}
+QTextEdit#dialogNotes {{ padding: 9px 11px; }}
+QLineEdit#dialogInput:focus, QComboBox#dialogCombo:focus, QTextEdit#dialogNotes:focus {{
+    border-color: {primary};
+}}
+QPushButton#dialogSecondaryButton {{
+    background: {card_hover};
+    border: 1px solid {border};
+    border-radius: 8px;
+    color: {text};
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 38px;
+    padding: 0 14px;
+}}
+QPushButton#dialogSecondaryButton:hover {{ border-color: #3A4250; background: #252A34; }}
+QLabel#dialogError {{
+    background: rgba(255, 92, 92, 0.07);
+    border: 1px solid rgba(255, 92, 92, 0.22);
+    border-radius: 7px;
+    color: #FF8B8B;
+    font-size: 11px;
+    padding: 8px 10px;
+}}
+
+QScrollArea#credentialScroll, QWidget#credentialList {{ background: transparent; border: none; }}
+QLabel#pageMessage {{
+    background: {card};
+    border: 1px solid {border};
+    border-radius: 11px;
+    color: {text_secondary};
+    font-size: 12px;
+    padding: 24px;
+}}
+QFrame#credentialItem {{
+    background: {card};
+    border: 1px solid {border};
+    border-radius: 11px;
+}}
+QFrame#credentialItem:hover {{ background: {card_hover}; border-color: #343B48; }}
+QLabel#credentialInitial {{
+    background: rgba(108, 92, 231, 0.16);
+    color: #BEB6FF;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+}}
+QLabel#credentialService {{ font-size: 13px; font-weight: 650; }}
+QLabel#credentialUsername, QLabel#credentialWebsite, QLabel#credentialCategory {{
+    color: {text_secondary};
+    font-size: 11px;
+}}
+QLabel#credentialCategory {{ color: #A99EFF; }}
+QPushButton#favoriteButton, QPushButton#credentialMenuButton {{
+    background: transparent;
+    border: none;
+    border-radius: 7px;
+    color: {text_secondary};
+    font-size: 18px;
+    min-height: 32px;
+    min-width: 32px;
+}}
+QPushButton#favoriteButton:hover, QPushButton#credentialMenuButton:hover {{ background: #272C35; color: {text}; }}
+QPushButton#favoriteButton[favorite="true"] {{ color: {warning}; }}
+
+QFrame#detailValueCard, QFrame#detailDateCard {{
+    background: #111318;
+    border: 1px solid {border};
+    border-radius: 9px;
+}}
+QLabel#detailCategory {{ color: #A99EFF; font-size: 12px; font-weight: 600; }}
+QLabel#detailValueLabel, QLineEdit#detailValue {{
+    background: transparent;
+    border: none;
+    color: {text};
+    font-size: 12px;
+    padding: 0;
+}}
+QPushButton#detailActionButton, QPushButton#detailFavoriteButton {{
+    background: transparent;
+    border: 1px solid {border};
+    border-radius: 7px;
+    color: #BEB6FF;
+    font-size: 11px;
+    font-weight: 600;
+    min-height: 30px;
+    padding: 0 10px;
+}}
+QPushButton#detailActionButton:hover, QPushButton#detailFavoriteButton:hover {{ background: {card_hover}; border-color: {primary}; }}
+QLabel#detailFeedback {{ border-radius: 7px; font-size: 11px; padding: 8px 10px; }}
+QLabel#detailFeedback[state="success"] {{ color: {success}; background: rgba(46, 204, 113, 0.07); }}
+QLabel#detailFeedback[state="error"] {{ color: #FF8B8B; background: rgba(255, 92, 92, 0.07); }}
+
+QFrame#categoryCard {{ min-height: 126px; }}
