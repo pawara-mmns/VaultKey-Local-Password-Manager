@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from math import log2
 from dataclasses import dataclass
 
 
@@ -14,6 +15,7 @@ class StrengthResult:
     level: int
     label: str
     percent: int
+    entropy_bits: float | None = None
 
 
 _LABELS = ("Very Weak", "Weak", "Fair", "Strong", "Very Strong")
@@ -69,6 +71,29 @@ def assess_password_strength(password: str) -> StrengthResult:
     else:
         level = 4
     return StrengthResult(level, _LABELS[level], (level + 1) * 20)
+
+
+def estimate_entropy_bits(length: int, character_pool_size: int) -> float:
+    """Estimate entropy for uniformly selected characters from a known pool."""
+    if length < 0 or character_pool_size < 1:
+        return 0.0
+    return length * log2(character_pool_size)
+
+
+def assess_generated_password(password: str, character_pool_size: int) -> StrengthResult:
+    """Classify a generated password using its exact active character pool."""
+    entropy = estimate_entropy_bits(len(password), character_pool_size)
+    if entropy < 40:
+        level = 0
+    elif entropy < 60:
+        level = 1
+    elif entropy < 80:
+        level = 2
+    elif entropy < 100:
+        level = 3
+    else:
+        level = 4
+    return StrengthResult(level, _LABELS[level], (level + 1) * 20, entropy)
 
 
 def validate_master_password(password: str, confirmation: str) -> str | None:
