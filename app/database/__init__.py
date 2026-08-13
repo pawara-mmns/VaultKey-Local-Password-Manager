@@ -6,11 +6,23 @@ from app.database.database import (
     VaultAlreadyExistsError,
     VaultConfigurationError,
 )
-from app.database.models import VaultSettings
+from app.database.models import (
+    Category,
+    CredentialDetail,
+    CredentialDraft,
+    CredentialSummary,
+    DashboardStats,
+    VaultSettings,
+)
 
 __all__ = [
     "DatabaseError",
     "DatabaseManager",
+    "Category",
+    "CredentialDetail",
+    "CredentialDraft",
+    "CredentialSummary",
+    "DashboardStats",
     "VaultAlreadyExistsError",
     "VaultConfigurationError",
     "VaultSettings",
