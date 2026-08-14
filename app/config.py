@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import sys
 from pathlib import Path
 
 APP_NAME = "VaultKey"
@@ -9,9 +11,29 @@ ORGANIZATION_NAME = "VaultKey"
 APP_VERSION = "0.5.0"
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-STYLES_DIR = PROJECT_ROOT / "styles"
-ASSETS_DIR = PROJECT_ROOT / "assets"
-DATA_DIR = PROJECT_ROOT / "data"
+IS_FROZEN = bool(getattr(sys, "frozen", False))
+RESOURCE_ROOT = Path(getattr(sys, "_MEIPASS", PROJECT_ROOT))
+
+
+def resolve_data_dir(
+    *,
+    frozen: bool | None = None,
+    local_app_data: str | Path | None = None,
+) -> Path:
+    """Return a durable vault location without writing into a frozen bundle."""
+    running_frozen = IS_FROZEN if frozen is None else frozen
+    if not running_frozen:
+        return PROJECT_ROOT / "data"
+
+    configured_root = local_app_data or os.environ.get("LOCALAPPDATA")
+    if configured_root:
+        return Path(configured_root).expanduser() / APP_NAME
+    return Path.home() / "AppData" / "Local" / APP_NAME
+
+
+STYLES_DIR = RESOURCE_ROOT / "styles"
+ASSETS_DIR = RESOURCE_ROOT / "assets"
+DATA_DIR = resolve_data_dir()
 DATABASE_PATH = DATA_DIR / "vault.db"
 WINDOW_ICON_PATH = ASSETS_DIR / "icons" / "vaultkey.svg"
 EYE_ICON_PATH = ASSETS_DIR / "icons" / "eye.svg"
