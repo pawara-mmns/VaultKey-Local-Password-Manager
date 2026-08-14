@@ -1,0 +1,42 @@
+VaultKey Third-Party Software Notices
+=====================================
+
+The VaultKey Windows distribution includes third-party open-source software.
+The following notices describe the principal directly bundled components.
+
+Qt for Python / PySide6 / Shiboken6 6.11.1
+------------------------------------------------------------
+Copyright (C) The Qt Company Ltd. and contributors.
+License: LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only.
+VaultKey is distributed under GPL-3.0-only and uses these components under
+their GPL-3.0-only option.
+Source and license information: https://code.qt.io/cgit/pyside/pyside-setup.git/
+Qt licensing information: https://www.qt.io/licensing/open-source-lgpl-obligations
+
+cryptography 46.0.7
+------------------------------------------------------------
+Copyright (C) The Python Cryptographic Authority and contributors.
+License: Apache-2.0 OR BSD-3-Clause.
+Source and license information: https://github.com/pyca/cryptography
+
+cffi 2.1.1
+------------------------------------------------------------
+Copyright (C) cffi contributors.
+License: MIT-0.
+Source and license information: https://github.com/python-cffi/cffi
+
+Python 3.14
+------------------------------------------------------------
+Copyright (C) Python Software Foundation.
+License: Python Software Foundation License Version 2.
+Source and license information: https://www.python.org/psf/license/
+
+PyInstaller bootloader
+------------------------------------------------------------
+Copyright (C) PyInstaller Development Team.
+License: GPL-2.0-or-later with the PyInstaller bootloader exception.
+Source and license information: https://pyinstaller.org/en/stable/license.html
+
+No third-party component listed here is provided with a warranty. Refer to
+the linked project sources and the license files shipped with the relevant
+components for their complete terms.
