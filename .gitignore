@@ -7,7 +7,9 @@ data/*.db
 data/*.db-*
 dist/
 build/
+release/
 *.spec
+!packaging/VaultKey.spec
 .env
 .idea/
 .vscode/
